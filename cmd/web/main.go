@@ -22,7 +22,7 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address") // Get Flag Variable
 
 	// Define a new command-line flag for the MySQL DSN string.
-	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "web:123456@/snippetbox?parseTime=true", "MySQL data source name")
 
 	flag.Parse() // Parse the Flag Variable
 
@@ -43,7 +43,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
-		snippets: &models.SnippetModel{DB: db}
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	srv := http.Server{
