@@ -5,7 +5,6 @@ import (
 	"fmt" // New import
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"snippetbox.minhnq4.com/internal/models"
 )
@@ -21,24 +20,28 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
-	}
-	ts, err := template.ParseFiles(files...)
+	// files := []string{
+	// 	"./ui/html/base.tmpl.html",
+	// 	"./ui/html/partials/nav.tmpl.html",
+	// 	"./ui/html/pages/home.tmpl.html",
+	// }
+	// ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.serverError(w, err) // Use the serverError() helper.
 		return
 	}
-	data := &templateData{
-		Snippets: snippets,
-	}
+	// data := &templateData{
+	// 	Snippets: snippets,
+	// }
 
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err) // Use the serverError() helper.
-	}
+	// Use the new render helper.
+	// err = ts.ExecuteTemplate(w, "base", data)
+	// if err != nil {
+	// 	app.serverError(w, err) // Use the serverError() helper.
+	// }
+	data := app.newTemplateData(r)
+	data.Snippets = snippets
+	app.render(w, http.StatusOK, "home.tmpl.html", data)
 }
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -55,23 +58,27 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/view.tmpl.html",
-	}
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	data := &templateData{
-		Snippet: snippet,
-	}
-	err = ts.ExecuteTemplate(w, "base", data) // define remder Template Name -> In template tmpl
-	if err != nil {
-		app.serverError(w, err)
-	}
+	data := app.newTemplateData(r)
+	data.Snippet = snippet
+	app.render(w, http.StatusOK, "view.tmpl.html", data)
+
+	// files := []string{
+	// 	"./ui/html/base.tmpl.html",
+	// 	"./ui/html/partials/nav.tmpl.html",
+	// 	"./ui/html/pages/view.tmpl.html",
+	// }
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// 	return
+	// }
+	// data := &templateData{
+	// 	Snippet: snippet,
+	// }
+	// err = ts.ExecuteTemplate(w, "base", data) // define remder Template Name -> In template tmpl
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
 
 	// fmt.Fprintf(w, "%+v", snippet)
 }
