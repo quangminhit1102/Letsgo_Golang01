@@ -71,7 +71,7 @@ func PermittedInt(value int, permittedValues ...int) bool {
 // a 'compiled' regexp.Regexp type, or panics in the event of an error. Parsing
 // this pattern once at startup and storing the compiled *regexp.Regexp in a
 // variable is more performant than re-parsing the pattern each time we need it.
-var EmailRX = regexp.MustCompile("/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/")
+var EmailRX = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 
 // MinChars() returns true if a value contains at least n characters.
 func MinChars(value string, n int) bool {

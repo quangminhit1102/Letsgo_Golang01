@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-playground/form/v4"
+	"github.com/justinas/nosurf"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLog,
@@ -59,9 +60,21 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 // *http.Request parameter here at the moment, but we will do later in the book.
 func (app *application) newTemplateData(r *http.Request) *templateData {
 	return &templateData{
-		CurrentYear: time.Now().Year(),
-		Flash:       app.sessionManager.PopString(r.Context(), "flash"),
+		CurrentYear:     time.Now().Year(),
+		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		IsAuthenticated: app.isAuthenticated(r),
+		CSRFToken:       nosurf.Token(r), // Add the CSRF token.
 	}
+}
+
+func (app *application) isAuthenticated(r *http.Request) bool {
+	isAuthenticated, ok := r.Context().Value(isAuthenticatedContextKey).(bool)
+	if !ok {
+		return false
+	}
+	return isAuthenticated
+
+	// return app.sessionManager.Exists(r.Context(), "authenticatedUserID") // Instead of Getting User Form DB
 }
 
 // Create a new decodePostForm() helper method. The second parameter here, dst,
