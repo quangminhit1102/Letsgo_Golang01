@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -37,7 +39,11 @@ var functions = template.FuncMap{
 
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
-	pages, err := filepath.Glob("./ui/html/pages/*.tmpl.html")
+	dir, err := os.Getwd()
+	if err != nil {
+	}
+	fmt.Println(dir)
+	pages, err := filepath.Glob(dir + "../ui/html/pages/*.tmpl.html")
 	if err != nil {
 		return nil, err
 	}
