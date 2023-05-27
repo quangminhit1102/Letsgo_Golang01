@@ -9,8 +9,8 @@ import (
 // Define a new Validator type which contains a map of validation errors for our
 // form fields.
 type Validator struct {
-	NonFieldErrors []string
-	FieldErrors    map[string]string
+	NonFieldErrors []string          // Non-Field Error
+	FieldErrors    map[string]string // Map Field Error [Key][Error]
 }
 
 // Update the Valid() method to also check that the NonFieldErrors slice is

@@ -18,23 +18,26 @@ import (
 )
 
 type application struct {
-	errorLog       *log.Logger
-	infoLog        *log.Logger
-	snippets       *models.SnippetModel
-	users          *models.UserModel
-	templateCache  map[string]*template.Template
-	formDecoder    *form.Decoder
-	sessionManager *scs.SessionManager
+	errorLog       *log.Logger                   // Error Logger
+	infoLog        *log.Logger                   // Info Logger
+	snippets       *models.SnippetModel          // Snippet Model
+	users          *models.UserModel             // User Model
+	templateCache  map[string]*template.Template // Template Caching Using Map
+	formDecoder    *form.Decoder                 // Form decoder:
+	sessionManager *scs.SessionManager           // Session Manaager: alexedwards/scs/v2
 }
 
+// Main Function
 func main() {
 
-	addr := flag.String("addr", ":4000", "HTTP network address") // Get Flag Variable
+	// Get Flag Variable
+	addr := flag.String("addr", ":4000", "HTTP network address")
 
 	// Define a new command-line flag for the MySQL DSN string.
 	dsn := flag.String("dsn", "web:123456@/snippetbox?parseTime=true", "MySQL data source name")
 
-	flag.Parse() // Parse the Flag Variable
+	// Parse the Flag Variable
+	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)                  // Info Log
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile) // Error Log
@@ -91,6 +94,10 @@ func main() {
 		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
 	}
 
+	// Initialize a new http.Server struct. We set the Addr and Handler fields so
+	// that the server uses the same network address and routes as before, and set
+	// the ErrorLog field so that the server now uses the custom errorLog logger in
+	// the event of any problems.
 	srv := http.Server{
 		Addr:      *addr,
 		ErrorLog:  errorLog,
@@ -103,12 +110,14 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)
-	// err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
-	err = srv.ListenAndServe()
+
+	// err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem") // Listen And Server With TLS
+	err = srv.ListenAndServe()                                     // Listen And Server Without TLS
+
 	errorLog.Fatal(err)
 }
 
-// for a given DSN.
+// Open DataBase Connection by a given DSN.
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

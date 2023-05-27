@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -16,12 +14,12 @@ import (
 // to it as the build progresses.
 type templateData struct {
 	CurrentYear     int
-	Snippet         *models.Snippet
-	Snippets        []*models.Snippet
-	Form            any
-	Flash           string // Add a Flash field to the templateData struct.
-	IsAuthenticated bool   // Add an IsAuthenticated field to the templateData struct.
-	CSRFToken       string // Add a CSRFToken field.
+	Snippet         *models.Snippet   // Model Snippet
+	Snippets        []*models.Snippet // Slice Model Snippets
+	Form            any               // Form of template to return and re-fill fields form Server
+	Flash           string            // Add a Flash field to the templateData struct.
+	IsAuthenticated bool              // Add an IsAuthenticated field to the templateData struct.
+	CSRFToken       string            // Add a CSRFToken field.
 }
 
 // Create a humanDate function which returns a nicely formatted string
@@ -37,13 +35,11 @@ var functions = template.FuncMap{
 	"humanDate": humanDate,
 }
 
+// Create New Template Cache
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
-	dir, err := os.Getwd()
-	if err != nil {
-	}
-	fmt.Println(dir)
-	pages, err := filepath.Glob(dir + "../ui/html/pages/*.tmpl.html")
+
+	pages, err := filepath.Glob("./ui/html/pages/*.tmpl.html")
 	if err != nil {
 		return nil, err
 	}

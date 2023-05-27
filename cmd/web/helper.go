@@ -33,6 +33,7 @@ func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
 }
 
+// Render Template by check From Template Cache
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
 	// Retrieve the appropriate template set from the cache based on the page
 	// name (like 'home.tmpl'). If no entry exists in the cache with the
@@ -67,6 +68,7 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 	}
 }
 
+// Return true If User is authenticated: Get Value Form Context
 func (app *application) isAuthenticated(r *http.Request) bool {
 	isAuthenticated, ok := r.Context().Value(isAuthenticatedContextKey).(bool)
 	if !ok {
@@ -74,7 +76,7 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 	}
 	return isAuthenticated
 
-	// return app.sessionManager.Exists(r.Context(), "authenticatedUserID") // Instead of Getting User Form DB
+	// return app.sessionManager.Exists(r.Context(), "authenticatedUserID") // Instead of Check Exist User Form DB
 }
 
 // Create a new decodePostForm() helper method. The second parameter here, dst,

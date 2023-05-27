@@ -8,6 +8,7 @@ import (
 	"github.com/justinas/nosurf"
 )
 
+// Middleware Secure all Header
 func secureHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Note: This is split across multiple lines for readability. You don't
@@ -21,12 +22,16 @@ func secureHeaders(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+// Middleware Log Request
 func (app *application) logRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		app.infoLog.Printf("%s - %s %s %s", r.RemoteAddr, r.Proto, r.Method, r.URL.RequestURI())
 		next.ServeHTTP(w, r)
 	})
 }
+
+// Middleware Recover panic
 func (app *application) recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Create a deferred function (which will always be run in the event
@@ -46,6 +51,7 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 	})
 }
 
+// Middleware Require Authentication
 func (app *application) requireAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// If the user is not authenticated, redirect them to the login page and
@@ -64,6 +70,7 @@ func (app *application) requireAuthentication(next http.Handler) http.Handler {
 	})
 }
 
+// Middleware CRSF Using Nosuft Package
 func noSurf(next http.Handler) http.Handler {
 	csrfHandler := nosurf.New(next)
 	csrfHandler.SetBaseCookie(http.Cookie{
@@ -73,6 +80,8 @@ func noSurf(next http.Handler) http.Handler {
 	})
 	return csrfHandler
 }
+
+// Middleware Authentication for user: Add Context "authenticatedUserID" value
 func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Retrieve the authenticatedUserID value from the session using the

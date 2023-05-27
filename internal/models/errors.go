@@ -5,6 +5,7 @@ import (
 )
 
 var (
+	// Add a new ErrNoRecord error. Not found record Error
 	ErrNoRecord = errors.New("models: no matching record found")
 	// Add a new ErrInvalidCredentials error. We'll use this later if a user
 	// tries to login with an incorrect email address or password.
